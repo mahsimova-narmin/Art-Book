@@ -61,8 +61,8 @@ class DetailsActivity : AppCompatActivity() {
 
             val cursor = database.rawQuery("SELECT*FROM arts WHERE id=?",arrayOf(selectedId.toString()))
 
-            val artNameIx = cursor.getColumnIndex("artName")
-            val artistNameIx = cursor.getColumnIndex("artistName")
+            val artNameIx = cursor.getColumnIndex("artname")
+            val artistNameIx = cursor.getColumnIndex("artistname")
             val yearIx = cursor.getColumnIndex("year")
             val imageIx = cursor.getColumnIndex("image")
 
@@ -76,6 +76,10 @@ class DetailsActivity : AppCompatActivity() {
                 binding.imageView.setImageBitmap(bitmap)
             }
             cursor.close()
+
+            binding.artNameText.isEnabled = false
+            binding.artistNameText.isEnabled = false
+            binding.yearText.isEnabled = false
         }
     }
 
@@ -94,8 +98,6 @@ class DetailsActivity : AppCompatActivity() {
                 val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncher.launch(intentToGallery)
             }
-
-
 
         } else{
             //Android <33  ->
@@ -135,8 +137,6 @@ class DetailsActivity : AppCompatActivity() {
                                 selectedBitmap= MediaStore.Images.Media.getBitmap(contentResolver, imageData)
                                 binding.imageView.setImageBitmap(selectedBitmap)
                             }
-
-
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -177,7 +177,7 @@ class DetailsActivity : AppCompatActivity() {
 
             try{
 
-                database.execSQL("CREATE TABLE IF NOT EXISTS arts (id INTEGER PRIMARY KEY, artName VARCHAR, artistName VARCHAR, year VARCHAR, image BLOB)")
+                database.execSQL("CREATE TABLE IF NOT EXISTS arts (id INTEGER PRIMARY KEY, artname VARCHAR, artistname VARCHAR, year VARCHAR, image BLOB)")
 
                 val sqlString = "INSERT INTO arts (artname, artistname, year, image) VALUES (?, ?, ?, ?)"
 
@@ -208,13 +208,11 @@ class DetailsActivity : AppCompatActivity() {
 
         val bitmapRatio: Double = width.toDouble()/ height.toDouble()
 
-
         if(bitmapRatio> 1){
             //landscape mode
             width = maximumSize
             val scaledHeight = width/ bitmapRatio
             height= scaledHeight.toInt()
-
 
         } else{
             //portrait mode
@@ -226,7 +224,5 @@ class DetailsActivity : AppCompatActivity() {
 
         return Bitmap.createScaledBitmap(image, width, height, true)
     }
-
-
 
 }
